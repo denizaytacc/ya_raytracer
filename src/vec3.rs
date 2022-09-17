@@ -155,12 +155,15 @@ impl Index<usize> for Vec3 {
 }
 
 impl Vec3{
-    pub fn new() -> Vec3{
+    pub fn new(d1: f64, d2: f64, d3: f64) -> Vec3{
         return Vec3{
-            x: 0.0,
-            y: 0.0,
-            z: 0.0,
+            x: d1,
+            y: d2,
+            z: d3,
         };
+    }
+    pub fn unit_vector(self) -> Vec3{
+        return self / self.length();
     }
     pub fn dot(self, other: Vec3) -> f64{
         return  self.x * other.x
@@ -241,12 +244,6 @@ mod tests {
         let vec3 = Vec3{x: -1.0, y: -4.0, z: 3.0};
         assert_eq!(vec1.cross(vec2), vec3);
         assert_eq!(vec1.dot(vec2), 32.0);
-    }
-    #[test]
-    fn test_vec3_new() {
-        let vec1 = Vec3{x: 0.0, y: 0.0, z: 0.0};
-        let vec2 = Vec3::new();
-        assert_eq!(vec1, vec2);
     }
     #[test]
     fn test_vec3_length() {
