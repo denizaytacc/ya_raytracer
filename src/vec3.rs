@@ -187,8 +187,12 @@ impl Vec3{
 
 
 impl Color{
-    pub fn write_color(self){
-        println!("{} {} {}", (255.999 * self.x) as i32, (255.999 * self.y) as i32, (255.999 * self.z) as i32);
+    pub fn write_color(self, samples_per_pixel: f64){
+        let scale = 1.0 / samples_per_pixel;
+        let r: f64 = self.x * scale;
+        let g: f64 = self.y * scale;
+        let b: f64 = self.z * scale;
+        println!("{} {} {}", (255.999 * r.clamp(0.0, 0.999)) as i32, (255.999 * g.clamp(0.0, 0.999)) as i32, (255.999 * b.clamp(0.0, 0.999)) as i32);
     }
 }
 

@@ -1,5 +1,5 @@
 use crate::vec3::{Vec3, Point3, Color};
-
+use crate::hittable::{HitRecord, Hittable, HittableList};
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Ray{
@@ -37,15 +37,13 @@ impl Ray{
             return (-half_b - discriminant.sqrt()) / (2.0 * a);
         }
     }
-    pub fn ray_color(self) -> Color{
-        let t = self.hit_sphere(Point3::new(0.0,0.0,-1.0), 0.5);
-        if t > 0.0{
-            let N: Vec3 = (self.at(t) - Vec3::new(0.0, 0.0, -1.0)).unit_vector();
-            return 0.5 * Color::new(N.x + 1.0, N.y + 1.0, N.z + 1.0);
+    pub fn ray_color(self, world: HittableList) -> Color{
+        let mut rec: HitRecord = HitRecord::new();
+        if world.hit(self, 0.0, f64::INFINITY, &mut rec){
+            return 0.5 * (rec.normal + Color::new(1.0, 1.0, 1.0));
         }
-        
         let unit_direction: Vec3 = self.direction().unit_vector();
-        let t: f64 = 0.5 * (unit_direction.y + 1.0);
+        let t = 0.5 * (unit_direction.y + 1.0);
         return (1.0 - t) * Color::new(1.0, 1.0, 1.0) + t * Color::new(0.5, 0.7, 1.0);
     }
 }
