@@ -1,5 +1,6 @@
 use crate::vec3::{Vec3, Point3, Color};
 use crate::hittable::{HitRecord, Hittable, HittableList};
+use std::rc::Rc;
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Ray{
@@ -37,10 +38,18 @@ impl Ray{
             return (-half_b - discriminant.sqrt()) / (2.0 * a);
         }
     }
-    pub fn ray_color(self, world: HittableList) -> Color{
-        let mut rec: HitRecord = HitRecord::new();
-        if world.hit(self, 0.0, f64::INFINITY, &mut rec){
-            return 0.5 * (rec.normal + Color::new(1.0, 1.0, 1.0));
+    pub fn ray_color(self, world: HittableList, depth: u64) -> Color{
+        if depth <= 0 {
+            // If we've exceeded the ray bounce limit, no more light is gathered
+            return Color::new(0.0, 0.0, 0.0);
+        }
+
+        if let Some(rec) = world.hit(self, 0.001, f64::INFINITY){
+            if let Some((scattered, attenuation)) = rec.material.scatter(self, &rec){
+                return attenuation * Ray::ray_color(scattered, world, depth-1);
+
+            }
+            return Color::new(0.0,0.0,0.0);
         }
         let unit_direction: Vec3 = self.direction().unit_vector();
         let t = 0.5 * (unit_direction.y + 1.0);

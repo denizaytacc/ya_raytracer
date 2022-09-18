@@ -1,6 +1,6 @@
-use std::ops::{Add, AddAssign, Sub, SubAssign, Neg, Mul, MulAssign, Div, DivAssign, Index};
+use std::ops::{Add, AddAssign, Sub, SubAssign, Neg, Mul, MulAssign, Div, DivAssign, Index, Range};
 use std::fmt;
-
+use rand::Rng;
 pub use Vec3 as Point3;
 pub use Vec3 as Color;
 
@@ -183,15 +183,54 @@ impl Vec3{
     pub fn length_squared(self) -> f64{
         return (self.x * self.x) + (self.y * self.y) + (self.z * self.z);
     }
+    pub fn random(min: f64, max: f64) -> Vec3 {
+        let mut rng = rand::thread_rng();
+        Vec3 {
+            x: rng.gen_range(min..max), 
+            y: rng.gen_range(min..max), 
+            z: rng.gen_range(min..max),
+        }
+    }
+    pub fn random_in_unit_sphere() -> Vec3 {
+        loop {
+            let p: Vec3 = Vec3::random(-1.0, 1.0);
+            if p.length_squared() >= 1.0 {
+                continue;
+            }
+            return p;
+        }
+    }
+    pub fn random_unit_vector() -> Vec3{
+        return Vec3::random_in_unit_sphere().unit_vector();
+    }
+    pub fn random_in_hemisphere(&self) -> Vec3{
+        let in_unit_sphere: Vec3 = Vec3::random_in_unit_sphere();
+        if in_unit_sphere.dot(*self) > 0.0 { // In the same hemisphere as the normal
+            return in_unit_sphere;
+
+        } 
+        else{
+            return -in_unit_sphere;
+
+        }
+    }
+    pub fn near_zero(self) -> bool{
+        // Return true if the vector is close to zero in all dimensions.
+        let s = 1.0e-8;
+        return (self.x).abs() < s && (self.y) < s.abs() && ((self.z).abs() < s);
+    }
+    pub fn reflect(self, other: Vec3) -> Vec3{
+        return self - 2.0 * self.dot(other) * other;
+    }
 }
 
 
 impl Color{
     pub fn write_color(self, samples_per_pixel: f64){
         let scale = 1.0 / samples_per_pixel;
-        let r: f64 = self.x * scale;
-        let g: f64 = self.y * scale;
-        let b: f64 = self.z * scale;
+        let r: f64 = (self.x * scale).sqrt();
+        let g: f64 = (self.y * scale).sqrt();
+        let b: f64 = (self.z * scale).sqrt();
         println!("{} {} {}", (255.999 * r.clamp(0.0, 0.999)) as i32, (255.999 * g.clamp(0.0, 0.999)) as i32, (255.999 * b.clamp(0.0, 0.999)) as i32);
     }
 }
