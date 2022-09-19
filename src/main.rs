@@ -29,26 +29,26 @@ fn main() {
     let mut world: HittableList = HittableList{
         content: Vec::new(),
     };
+
     let material_ground = Rc::new(Lambertian::new(Color::new(0.8, 0.8, 0.0)));
     let material_center = Rc::new(Lambertian::new(Color::new(0.1, 0.2, 0.5)));
     let material_left = Rc::new(Dielectric::new(1.5));
-    let material_left_other = Rc::new(Dielectric::new(1.5));
-    let mat_right = Rc::new(Metal::new(Color::new(0.8, 0.6, 0.2), 1.0));
+    let mat_right = Rc::new(Metal::new(Color::new(0.8, 0.6, 0.2), 0.0));
 
-    let sphere_ground = Sphere::new(Point3::new(0.0, -100.5, -1.0), 100.0, material_ground);
-    let sphere_center = Sphere::new(Point3::new(0.0, 0.0, -1.0), 0.5, material_center);
-    let sphere_left = Sphere::new(Point3::new(-1.0, 0.0, -1.0), 0.5, material_left);
-    let sphere_left_other = Sphere::new(Point3::new(-1.0, 0.0, -1.0), -0.4, material_left_other);
-    let sphere_right = Sphere::new(Point3::new(1.0, 0.0, -1.0), 0.5, mat_right);
+    let sphere_ground = Sphere::new(Point3::new(0.0, -100.5,     -1.0), 100.0, material_ground);
+    let sphere_center = Sphere::new(Point3::new(0.0,    0.0,     -1.0), 0.5, material_center);
+    let sphere_left = Sphere::new(Point3::new( -1.0,    0.0,     -1.0), 0.5, material_left);
+    let sphere_right = Sphere::new(Point3::new( 1.0,     0.0,    -1.0), 0.5, mat_right);
 
     world.content.push(Arc::new(sphere_ground));
     world.content.push(Arc::new(sphere_center));
     world.content.push(Arc::new(sphere_left));
-    world.content.push(Arc::new(sphere_left_other));
     world.content.push(Arc::new(sphere_right));
 
     // Camera
-    let camera = Camera::new();
+    //let camera = Camera::new(Point3::new(-2.0, 2.0, 1.0), Point3::new(0.0, 0.0, -1.0), Vec3::new(0.0, 1.0, 0.0), 90.0, ASPECT_RATIO); ex1
+    let camera = Camera::new(Point3::new(-2.0, 2.0, 1.0), Point3::new(0.0, 0.0, -1.0), Vec3::new(0.0, 1.0, 0.0), 20.0, ASPECT_RATIO);
+
     println!("P3\n{IMAGE_WIDTH}  {IMAGE_HEIGHT} \n255");
     for j in (0..IMAGE_HEIGHT).rev(){
         eprintln!("Scanlines remaining: {j}");
