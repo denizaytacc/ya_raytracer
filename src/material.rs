@@ -1,8 +1,6 @@
-use crate::vec3::{Vec3, Point3, Color};
+use crate::vec3::{Vec3, Color};
 use crate::ray::{Ray};
-use crate::sphere::{Sphere};
-use crate::hittable::{HitRecord, Hittable, HittableList};
-use crate::camera::{Camera};
+use crate::hittable::{HitRecord};
 use rand::Rng;
 
 
@@ -91,7 +89,7 @@ impl Scatter for Metal {
 
 impl Scatter for Dielectric {
     fn scatter(&self, r_in: Ray, rec: &HitRecord) -> Option<(Ray, Color)> {
-        let mut refraction_ratio: f64;
+        let refraction_ratio: f64;
         if rec.front_face {
             refraction_ratio = 1.0 / self.ir
         } else {

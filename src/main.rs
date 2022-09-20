@@ -4,16 +4,13 @@ mod sphere;
 mod hittable;
 mod camera;
 mod material;
+mod world;
 
-use std::sync::Arc;
-use std::rc::Rc;
+
 use rand::Rng;
 use crate::vec3::{Vec3, Point3, Color};
-use crate::ray::{Ray};
-use crate::sphere::{Sphere};
-use crate::hittable::{HitRecord, Hittable, HittableList};
 use crate::camera::{Camera};
-use crate::material::{Lambertian, Scatter, Metal, Dielectric};
+use crate::world::{random_scene};
 extern crate glium;
 
 fn main() {
@@ -26,31 +23,14 @@ fn main() {
     let mut rng = rand::thread_rng();
 
     // World
-    let mut world: HittableList = HittableList{
-        content: Vec::new(),
-    };
-
-    let material_ground = Rc::new(Lambertian::new(Color::new(0.8, 0.8, 0.0)));
-    let material_center = Rc::new(Lambertian::new(Color::new(0.1, 0.2, 0.5)));
-    let material_left = Rc::new(Dielectric::new(1.5));
-    let mat_right = Rc::new(Metal::new(Color::new(0.8, 0.6, 0.2), 0.0));
-
-    let sphere_ground = Sphere::new(Point3::new(0.0, -100.5,     -1.0), 100.0, material_ground);
-    let sphere_center = Sphere::new(Point3::new(0.0,    0.0,     -1.0), 0.5, material_center);
-    let sphere_left = Sphere::new(Point3::new( -1.0,    0.0,     -1.0), 0.5, material_left);
-    let sphere_right = Sphere::new(Point3::new( 1.0,     0.0,    -1.0), 0.5, mat_right);
-
-    world.content.push(Arc::new(sphere_ground));
-    world.content.push(Arc::new(sphere_center));
-    world.content.push(Arc::new(sphere_left));
-    world.content.push(Arc::new(sphere_right));
+    let world = random_scene();
 
     // Camera
-    let lookfrom: Point3 = Point3::new(3.0, 3.0, 2.0);
-    let lookat: Point3 = Point3::new(0.0, 0.0, -1.0);
+    let lookfrom: Point3 = Point3::new(13.0, 2.0, 3.0);
+    let lookat: Point3 = Point3::new(0.0, 0.0, 0.0);
     let vup: Vec3 = Vec3::new(0.0, 1.0, 0.0);
-    let dist_to_focus = (lookfrom - lookat).length();
-    let aperture = 2.0;
+    let dist_to_focus = 10.0;
+    let aperture = 0.1;
     //let camera = Camera::new(Point3::new(-2.0, 2.0, 1.0), Point3::new(0.0, 0.0, -1.0), Vec3::new(0.0, 1.0, 0.0), 90.0, ASPECT_RATIO); ex1
     let camera = Camera::new(lookfrom, lookat, vup, 20.0, ASPECT_RATIO, aperture, dist_to_focus);
 
@@ -59,7 +39,7 @@ fn main() {
         eprintln!("Scanlines remaining: {j}");
         for i in 0..IMAGE_WIDTH{
             let mut pixel_color = Color::new(0.0, 0.0, 0.0);
-            for s in 0..SAMPLES_PER_PIXEL{
+            for _ in 0..SAMPLES_PER_PIXEL{
                 let u = (i as f64 + rng.gen::<f64>()) / (IMAGE_WIDTH-  1) as f64;
                 let v = (j as f64+ rng.gen::<f64>()) / (IMAGE_HEIGHT - 1) as f64;
                 let r = camera.get_ray(u, v);

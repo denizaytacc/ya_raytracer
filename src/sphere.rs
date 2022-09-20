@@ -1,8 +1,7 @@
-use crate::vec3::{Vec3, Point3, Color};
+use crate::vec3::{Vec3, Point3};
 use crate::ray::{Ray};
 use crate::hittable::{HitRecord, Hittable};
 use crate::material::{Scatter};
-use std::sync::Arc;
 use std::rc::Rc;
 
 
