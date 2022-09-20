@@ -1,6 +1,7 @@
 use crate::vec3::{Vec3, Point3, Color};
 use crate::ray::{Ray};
 use crate::sphere::{Sphere};
+use crate::hittable::{HitRecord, Hittable, HittableList};
 
 pub struct Camera{
     origin: Point3,
@@ -9,6 +10,7 @@ pub struct Camera{
     vertical: Vec3,
     u: Vec3,
     v: Vec3,
+    w: Vec3,
     lens_radius: f64,
 }
 
@@ -41,6 +43,7 @@ impl Camera{
             lower_left_corner: lower_left_corner,
             u: u,
             v: v,
+            w: w,
             lens_radius: aperture / 2.0,
         };
 

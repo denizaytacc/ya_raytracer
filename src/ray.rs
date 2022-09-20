@@ -1,5 +1,6 @@
 use crate::vec3::{Vec3, Point3, Color};
 use crate::hittable::{HitRecord, Hittable, HittableList};
+use std::rc::Rc;
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Ray{

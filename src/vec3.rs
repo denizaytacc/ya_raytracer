@@ -1,4 +1,4 @@
-use std::ops::{Add, AddAssign, Sub, SubAssign, Neg, Mul, MulAssign, Div, DivAssign, Index};
+use std::ops::{Add, AddAssign, Sub, SubAssign, Neg, Mul, MulAssign, Div, DivAssign, Index, Range};
 use std::fmt;
 use rand::Rng;
 pub use Vec3 as Point3;
@@ -256,7 +256,7 @@ mod tests {
     use super::*;
     #[test]
     fn test_vec3_add_sub() {
-        let vec1_orig = Vec3{x: 5f64, y: 4f64, z: 3f64};
+        let mut vec1_orig = Vec3{x: 5f64, y: 4f64, z: 3f64};
         let mut vec1 = Vec3{x: 5f64, y: 4f64, z: 3f64};
         let vec2 = Vec3{x: 1f64, y: 2f64, z: 4f64};
         let vec3 = Vec3{x: 6f64, y: 6f64, z: 7f64};
